@@ -1,39 +1,45 @@
 "use server";
 
-import { ParsedTransaction } from "@/types/parsedTransaction";
+import { ParsedTransaction }from "@/types/parsedTransaction";
+
+type TransactionFormatterReturn = 
+  | { error: string } // If there's an error (invalid transaction number)
+  | { message: string; processedTransaction: ParsedTransaction }; // If successful, includes the processed transaction
 
 /**
- * Format a transaction string into an object.
+ * Formats and processes a transaction string by validating it 
+ * and converting it into a parsed transaction object. If the 
+ * transaction number is invalid, it returns an error message.
  * 
- * @param transaction: any
- * @param formData: FormData
- * 
- * @returns FormData
+ * @param previousState any
+ * @param formData FormData
+ * @returns Promise<TransactionFormatterReturn>
  */
-export async function transactionFormatter(previousState: any, formData: FormData) {
+export async function transactionFormatter(previousState: any, formData: FormData): Promise<TransactionFormatterReturn> {
     const transactionNumber = String(formData.get('transactionNumber')).trim();
-    if (!validateString(transactionNumber)) {
+    if (!validateTransactionString(transactionNumber)) {
         return {
-            error: "Invalid translation number",
-            processedTransaction: undefined,
+            error: "Invalid translation number"
         }
     }
 
-    const data = processTransaction(transactionNumber)
+    const data = processTransaction(transactionNumber);
     return { message: 'Success', processedTransaction: data };
 }
 
 /**
- * Convert a transaction string into an object.
+ * Converts a valid transaction string into a structured ParsedTransaction object.
+ * It extracts values based on the tag-length-value pattern and processes the 
+ * transaction data accordingly.
  * 
- * @param transaction: string
+ * @param transaction string
  * @returns ParsedTransaction
  */
 function processTransaction(transaction: string): ParsedTransaction {
     const d = new Date();
     const parsedTransaction: ParsedTransaction = {
         version: "1.0",
-        transaction_id: `${d.getFullYear()}${d.getMonth()}${d.getDay()}-${d.getSeconds()}${d.getMinutes()}${d.getHours()}-${d.getMilliseconds()}`,
+        transaction_id: `${d.getFullYear()}${d.getMonth() + 1}${d.getDay()+1}-${d.getHours()}${d.getMinutes()}${d.getSeconds()}-${d.getMilliseconds()}`,
         amount: "",
         network: "",
         transaction_descriptor: "",
@@ -71,7 +77,44 @@ function processTransaction(transaction: string): ParsedTransaction {
     return parsedTransaction;
 }
 
-
-function validateString(value: unknown) {
-    return (value || typeof value == "string") 
-}
+/**
+ * Validates a transaction string to ensure it follows the tag-length-value format. 
+ * Each tag is followed by a specific length and associated value, and each tag's 
+ * value type is validated (e.g., Tag 1 should be a string, Tag 2 should be a number).
+ * 
+ * @param str 
+ * @returns boolean
+ */
+function validateTransactionString(transaction: string): boolean {
+    let index = 0;
+  
+    while (index < transaction.length) {
+      // Extract the tag (1 digit)
+      const tag = transaction[index++];
+      
+      // Extract the length (2 digits)
+      const length = parseInt(transaction.substr(index, 2), 10);
+      if (isNaN(length)) {
+        return false; // Invalid length
+      }
+      index += 2;
+  
+      // Extract the value (based on the length)
+      const value = transaction.substr(index, length);
+      if (value.length !== length) {
+        return false; // Invalid value length
+      }
+      index += length;
+  
+      // Validate specific tags
+      if (tag === '1' && !/^[A-Za-z]+$/.test(value)) {
+        return false; // Tag 1 should be a string
+      }
+      if (tag === '2' && isNaN(parseFloat(value))) {
+        return false; // Tag 2 should be a number
+      }
+    }
+  
+    return true; // All checks passed
+  }
+  

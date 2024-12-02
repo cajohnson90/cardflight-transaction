@@ -6,8 +6,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CardFlight Json Formatter",
-  description: "Format transaction Id",
+  title: "CardFlight",
+  description:
+    "Parse a transaction string into a transaction object and display the data on the webpage",
 };
 
 export default function RootLayout({

@@ -1,25 +1,44 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { transactionFormatter } from "@/actions/transactionFormatter";
 import ProcessedTransaction from "./processedTransaction";
 
-export default function Form() {
-  const [state, formAction, isPending] = useActionState(transactionFormatter, {
-    parsedTransaction: null,
-    error: null,
-  });
+export default function Form({
+  actionName,
+  defaultState = { processedTransaction: null, error: null },
+}) {
+  const [state, formAction, isPending] = useActionState(
+    actionName,
+    defaultState
+  );
+
+  // Trigger success toast after processedTransaction is available
+  useEffect(() => {
+    if (state?.processedTransaction) {
+      toast.success("Transaction processed successfully!");
+    }
+  }, [state?.processedTransaction]); // Runs when processedTransaction changes
+
+  // Trigger error toast if there is an error in the state
+  useEffect(() => {
+    if (state?.error) {
+      toast.error(`Error: ${state.error}`); // Show error message from the state
+    }
+  }, [state?.error]); // Runs when error state changes
 
   return (
     <div>
-      <form className="mt-10 flex flex-col dark:text-black" action={formAction}>
+      <form
+        className="mt-6 flex flex-col dark:text-black w-[28rem]"
+        action={formAction}
+      >
         <input
           type="text"
           name="transactionNumber"
-          className="h-14 px-4 mb-4 rounded-lg border-black dark:bg-white dark:bg-opacity-80 dark:focus:bg-opacity-100 transition-all dark:outline-none"
-          placeholder="Transaction Id Number"
+          className="h-14 px-4 mb-4 rounded-lg borderBlack transition-all"
+          placeholder="Transaction Number"
           maxLength={500}
           required
         />
@@ -34,7 +53,7 @@ export default function Form() {
         {isPending && <p className="sr-only">Loading...</p>}
       </form>
       {state?.processedTransaction && (
-        <ProcessedTransaction formData={state?.processedTransaction} />
+        <ProcessedTransaction transaction={state?.processedTransaction} />
       )}
     </div>
   );

@@ -1,3 +1,11 @@
+# Cardflight
+
+This program parses a transaction string and displays the result to the screen.
+
+## Installation
+
+Download and install [Node.js](https://nodejs.org/en/) to run the program.
+
 ## Technical Plan
 
 ### Objective
@@ -15,7 +23,6 @@ Develop a Next.js application that enables users to input a transaction number, 
 
 #### Backend (Server-Side):
 
-- An API route in Next.js that handles the form submission.
 - The API will process the transaction number, fetch data from an external or internal data source, and return the result in JSON format.
 
 ### State Management:
@@ -27,55 +34,65 @@ Develop a Next.js application that enables users to input a transaction number, 
 
 ### Frontend Form Component:
 
-- Create a React component that contains an input field for the transaction number.
+- Create a React component that contains an textbox for the transaction number.
 - Implement form validation to ensure the input meets the required format and is not empty.
-- On form submission, trigger an asynchronous fetch request to the backend API with the transaction number as a parameter.
-
-### Backend API Route (Server-Side):
-
-- Implement a Next.js API route (/pages/api/transaction.js) that processes the transaction number.
-- The route should handle:
-- Input validation (e.g., ensuring the transaction number is valid).
-- Data fetching (from a database, external API, etc.).
-- Return the result as a JSON object.
-
-### Server-Side Data Fetching:
-
-- Utilize Next.js's built-in API routes for server-side logic.
-- Use libraries like axios or fetch to query the data source.
+- On form submission, trigger an asynchronous fetch request to the backend with the transaction number as a parameter.
 
 ### Client-Side Data Rendering:
 
-- Upon successful data fetch, render the results in a React component (e.g., ProcessedTransaction).
+- Upon successful data fetch, render the results in a React component (e.g. ProcessedTransaction).
 - Manage loading and error states for a seamless user experience.
 
 ## Unit Testing Strategy
 
-- Testing Framework: Use Jest for unit testing to ensure the correctness and reliability of the application.
+### Testing Framework
+
+- Use Jest for unit testing to ensure the correctness and reliability of the application.
 
 ### Frontend Testing:
 
 - Form Component Tests:
-  - Verify input field validation (e.g., ensuring required fields are not empty).
-  - Test form submission behavior and edge cases.
+  - Verify textbox validation (e.g. ensuring required fields are not empty).
+  - Test form submission behavior
 - State Management Tests:
   - Mock the fetch request and test the state transitions (loading, success, error).
   - Ensure that the data is correctly displayed once fetched.
 - Backend Testing:
-  - API Route Tests:
-  - Mock external API/database calls and test the response handling.
   - Test edge cases (e.g., invalid transaction number, missing data).
-  - Validate correct HTTP status codes and error handling (e.g., 404, 500).
 - Test Coverage:
-  - Aim for 80%+ test coverage for both the frontend and backend components.
   - Include integration tests to ensure smooth interaction between the frontend and backend.
-- Mocking External Calls:
-  - Use libraries like `jest-mock` or `msw` (Mock Service Worker) to mock external APIs or database calls during tests.
 
 ## Getting Started
 
-First, run the development server:
+1. Extract the zip archive into a folder.
+2. Install the install dependencies
+
+```bash
+npm install
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
 ```
+
+4. Open a browser and go to `http://localhost:3000/`
+
+## Usage
+
+- Input a transaction string into the text field and click the `Submit` button.
+- The program will parse the transaction string into a transaction object and display it under the `Processed Transaction` section.
+
+### Example:
+
+- 104VISA20522.00310BURGERBARN
+
+### Input Format
+
+The input string is structured as follows:
+
+- The first character is a tag. It indicates the type of value that follows.
+- The second and third characters represent a length, which tells you the length (in characters) of the following value.
+- The next several characters, up to the specified length, form the value.
+- This pattern repeats until the end of the string.
