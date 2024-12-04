@@ -64,31 +64,34 @@ Develop a Next.js application that enables users to input a transaction number, 
 
 ## Getting Started
 
-1. Extract the zip archive into a folder.
-2. Install the install dependencies
+1. Extract the zip archive into a new folder on your local machine.
+2. Install the application dependencies.
 
 ```bash
 npm install
 ```
 
-3. Run the development server:
+3. Create a production-ready version of your application
 
 ```bash
-npm run dev
+npm run build
 ```
 
-4. Open a browser and go to `http://localhost:3000/`
+4. Start the application after it has been built
+
+```bash
+npm run start
+```
+
+5. Open a browser and go to `http://localhost:3000/`
 
 ## Usage
 
 - Input a transaction string into the text field and click the `Submit` button.
 - The program will parse the transaction string into a transaction object and display it under the `Processed Transaction` section.
+- A notification is displayed to the user indicating success or failure after the transaction number is submitted.
 
-### Example:
-
-- 104VISA20522.00310BURGERBARN
-
-### Input Format
+## Input Format
 
 The input string is structured as follows:
 
@@ -96,3 +99,7 @@ The input string is structured as follows:
 - The second and third characters represent a length, which tells you the length (in characters) of the following value.
 - The next several characters, up to the specified length, form the value.
 - This pattern repeats until the end of the string.
+
+### Example Strings
+
+- 104VISA20522.00310BURGERBARN

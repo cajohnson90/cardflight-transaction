@@ -4,9 +4,31 @@ import { useActionState, useEffect } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import toast from "react-hot-toast";
 import ProcessedTransaction from "./processedTransaction";
+import { TransactionFormatterState } from "@/types/types";
 
+// The action name type for transactionFormatter
+type ActionNameType = (
+  previousState: TransactionFormatterState,
+  formData: FormData
+) => Promise<TransactionFormatterState> | TransactionFormatterState;
+
+// A transactionformatter action function to return the state of the action
+const transactionformatterAction: ActionNameType = (
+  previousState: TransactionFormatterState
+): TransactionFormatterState => {
+  return previousState;
+};
+
+/**
+ * Render the form component and submit the transaction number for parsing.
+ *
+ * @param actionName
+ * @param defaultState
+ *
+ * @returns null
+ */
 export default function Form({
-  actionName,
+  actionName = transactionformatterAction,
   defaultState = { processedTransaction: null, error: null },
 }) {
   const [state, formAction, isPending] = useActionState(
@@ -21,19 +43,15 @@ export default function Form({
     }
   }, [state?.processedTransaction]); // Runs when processedTransaction changes
 
-  // Trigger error toast if there is an error in the state
   useEffect(() => {
     if (state?.error) {
-      toast.error(`Error: ${state.error}`); // Show error message from the state
+      toast.error(`Error: ${state.error}`);
     }
-  }, [state?.error]); // Runs when error state changes
+  }, [state?.error]);
 
   return (
-    <div>
-      <form
-        className="mt-6 flex flex-col dark:text-black w-[28rem]"
-        action={formAction}
-      >
+    <div className="w-[36rem]">
+      <form className="mt-6 flex flex-col dark:text-black " action={formAction}>
         <input
           type="text"
           name="transactionNumber"

@@ -2,7 +2,9 @@ import "@testing-library/jest-dom";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Page from "../app/page";
 import Form from "../components/form";
+import { validateTransactionString } from "@/lib/validation";
 import { transactionFormatter } from "../actions/transactionFormatter";
+import { log } from "console";
 
 // Test case for the main page rendering
 describe("Page", () => {
@@ -35,13 +37,16 @@ jest.mock("../actions/transactionFormatter"); // Mock the transactionFormatter f
 
 describe("Form Submit", () => {
   it("should submit the form and process the transaction", async () => {
+    const testTransactionString = "104VISA20522.00310BURGERBARN";
+    const parsedTransaction = validateTransactionString(testTransactionString);
+
     // Set up the mock for transactionFormatter
     (transactionFormatter as jest.Mock).mockResolvedValue({
       message: "Success",
       processedTransaction: {
-        network: "VISA",
-        amount: "22.00",
-        merchant: "BURGERBARN",
+        network: parsedTransaction?.network,
+        amount: parsedTransaction?.amount,
+        merchant: parsedTransaction?.merchant,
       },
     });
 
@@ -54,7 +59,7 @@ describe("Form Submit", () => {
 
     // Simulate typing in the transaction number
     fireEvent.change(input, {
-      target: { value: "104VISA20522.00310BURGERBARN" },
+      target: { value: testTransactionString },
     });
 
     // Simulate clicking the submit button

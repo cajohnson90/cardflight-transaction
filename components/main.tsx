@@ -2,7 +2,7 @@ import SectionHeading from "./section-heading";
 
 export default function Main() {
   return (
-    <div className="items-center justify-center w-[28rem]">
+    <div className="items-center justify-center w-[36rem]">
       <SectionHeading>Transaction</SectionHeading>
       <p className="text-gray-500 dark:text-white/80">
         Insert a transaction number and receive a parsed object with the
