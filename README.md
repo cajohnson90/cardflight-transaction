@@ -84,12 +84,15 @@ npm run start
 ```
 
 5. Open a browser and go to `http://localhost:3000/`
+<img width="1172" alt="Screenshot 2024-12-03 at 9 40 21 PM" src="https://github.com/user-attachments/assets/bd988c1b-a237-486a-9d54-f5f042c57510">
 
 ## Usage
 
 - Input a transaction string into the text field and click the `Submit` button.
 - The program will parse the transaction string into a transaction object and display it under the `Processed Transaction` section.
 - A notification is displayed to the user indicating success or failure after the transaction number is submitted.
+<img width="1173" alt="Screenshot 2024-12-03 at 9 59 02 PM" src="https://github.com/user-attachments/assets/e575681e-f912-426a-8156-9e8cf3772e75">
+
 
 ## Input Format
 
